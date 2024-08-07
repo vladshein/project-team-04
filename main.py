@@ -27,7 +27,9 @@ def input_error(func: Callable) -> Callable:
         except (PhoneNumberValueError, BirthdayValueError) as e:
             return e
         except ValueError:
-            return "Incorrect input command argument: add [name][phone], change[name][old][new], phone[name], add-birthday[name][date], show-birthday[name]."
+            return """Incorrect input command argument: add [name][phone],
+                    change[name][old][new], phone[name], 
+                    add-birthday[name][date], show-birthday[name]."""
         except KeyError:
             return "Contact not found or no contact information."
         except IndexError:
@@ -115,7 +117,7 @@ def show_phone(args: List[str], book: AddressBook) -> str:
 
 
 @input_error
-def show_all(book: AddressBook) -> str:
+def show_all(_: List[str], book: AddressBook) -> str:
     """
     Show all contacts.
 
@@ -137,14 +139,14 @@ def show_all(book: AddressBook) -> str:
 @input_error
 def add_birthday(args: List[str], book: AddressBook) -> str:
     """
-    Add a birthday to an existing contact.
+        Add a birthday to an existing contact.
+    args
+        Args:
+            args (List[str]): List containing the name and birthday.
+            book (AddressBook): The address book instance.
 
-    Args:
-        args (List[str]): List containing the name and birthday.
-        book (AddressBook): The address book instance.
-
-    Returns:
-        str: Success message indicating birthday addition.
+        Returns:
+            str: Success message indicating birthday addition.
     """
     name, birthday, *_ = args
     record = book.find(name)
@@ -174,7 +176,7 @@ def show_birthday(args: List[str], book: AddressBook) -> str:
 
 
 @input_error
-def birthdays(book: AddressBook) -> str:
+def birthdays(_: list[str], book: AddressBook) -> str:
     """
     Show upcoming birthdays.
 
@@ -209,13 +211,22 @@ def load_data(filename: str = "addressbook.pkl"):
         with open(filename, "rb") as f:
             return pickle.load(f)
     except FileNotFoundError:
-        return AddressBook()  # Повернення нової адресної книги, якщо файл не знайдено
+        return AddressBook()
 
 
 def main():
     """
     Main function to run the assistant bot.
     """
+    comm = {
+        "add": add_contact,
+        "change": change_contact,
+        "phone": show_phone,
+        "all": show_all,
+        "add-birthday": add_birthday,
+        "show-birthday": show_birthday,
+        "birthdays": birthdays,
+    }
     book = load_data()
     print("Welcome to the assistant bot!")
     while True:
@@ -229,26 +240,8 @@ def main():
         elif command == "hello":
             print("How can I help you?")
 
-        elif command == "add":
-            print(add_contact(args, book))
-
-        elif command == "change":
-            print(change_contact(args, book))
-
-        elif command == "phone":
-            print(show_phone(args, book))
-
-        elif command == "all":
-            print(show_all(book))
-
-        elif command == "add-birthday":
-            print(add_birthday(args, book))
-
-        elif command == "show-birthday":
-            print(show_birthday(args, book))
-
-        elif command == "birthdays":
-            print(birthdays(book))
+        elif command in comm:
+            print(comm[command](args, book))
 
         else:
             print("Invalid command.")
