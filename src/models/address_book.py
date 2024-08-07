@@ -3,7 +3,7 @@ AddressBook
 """
 from datetime import datetime, timedelta
 from collections import UserDict
-from address_book.record import Record
+from src.models.record import Record
 
 
 class AddressBook(UserDict):
