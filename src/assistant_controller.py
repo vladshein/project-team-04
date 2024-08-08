@@ -17,12 +17,12 @@ from src.book_controller import (
 def execute_command(command: str, args: list, book: AddressBook) -> str:
     """
     Execute the given command with the provided arguments and address book.
-    
+
     Args:
         command (str): The command to execute.
         args (list): The arguments for the command.
         book (AddressBook): The address book data.
-        
+
     Returns:
         str: The result of the command execution.
     """

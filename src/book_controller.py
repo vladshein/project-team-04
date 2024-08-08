@@ -27,7 +27,7 @@ def input_error(func: Callable) -> Callable:
             return e
         except ValueError:
             return """Incorrect input command argument: add [name][phone],
-                    change[name][old][new], phone[name], 
+                    change[name][old][new], phone[name],
                     add-birthday[name][date], show-birthday[name]."""
         except KeyError:
             return "Contact not found or no contact information."

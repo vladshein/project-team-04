@@ -96,4 +96,6 @@ class Record:
         """
         phone_list = "; ".join(p.value for p in self.phones)
         birthday_str = f", {self.birthday}" if self.birthday else ""
-        return f"Contact name: {self.name.value:<10}| phones: {phone_list}{birthday_str}"
+        return (
+            f"Contact name: {self.name.value:<10}| phones: {phone_list}{birthday_str}"
+        )
