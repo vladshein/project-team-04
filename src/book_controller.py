@@ -189,8 +189,9 @@ def birthdays(_: list[str], book: AddressBook) -> str:
     upcoming = ""
     if upcoming_birthdays:
         for birthday in upcoming_birthdays:
-            upcoming += f"Name : {birthday['name']:<10} - congratulation_date: {birthday['congratulation_date']}\n"
-        return upcoming
+            upcoming += f"Name : {birthday['name']:<10} - congratulation_date: \
+            {birthday['congratulation_date']}\n"
+        return upcoming.strip()
     return "No upcoming birthdays"
 
 
