@@ -2,33 +2,15 @@
 Homework 08
 """
 
-from src.book_controller import (
-    parse_input,
-    add_contact,
-    change_contact,
-    show_phone,
-    show_all,
-    add_birthday,
-    show_birthday,
-    birthdays,
-    save_data,
-    load_data,
-)
+from src.assistant_controller import execute_command
+from src.book_controller import parse_input, save_data, load_data
 
 
 def main():
     """
     Main function to run the assistant bot.
     """
-    comm = {
-        "add": add_contact,
-        "change": change_contact,
-        "phone": show_phone,
-        "all": show_all,
-        "add-birthday": add_birthday,
-        "show-birthday": show_birthday,
-        "birthdays": birthdays,
-    }
+
     book = load_data()
     print("Welcome to the assistant bot!")
     while True:
@@ -40,14 +22,8 @@ def main():
             save_data(book)
             break
 
-        if command == "hello":
-            print("How can I help you?")
-
-        elif command in comm:
-            print(comm[command](args, book))
-
-        else:
-            print("Invalid command.")
+        result = execute_command(command, args, book)
+        print(result)
 
 
 if __name__ == "__main__":
