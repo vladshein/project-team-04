@@ -13,6 +13,16 @@ from src.book_controller import (
     birthdays,
 )
 
+COMMANDS = {
+    "add": add_contact,
+    "change": change_contact,
+    "phone": show_phone,
+    "all": show_all,
+    "add-birthday": add_birthday,
+    "show-birthday": show_birthday,
+    "birthdays": birthdays,
+}
+
 
 def execute_command(command: str, args: list, book: AddressBook) -> str:
     """
@@ -26,21 +36,13 @@ def execute_command(command: str, args: list, book: AddressBook) -> str:
     Returns:
         str: The result of the command execution.
     """
-    commands = {
-        "add": add_contact,
-        "change": change_contact,
-        "phone": show_phone,
-        "all": show_all,
-        "add-birthday": add_birthday,
-        "show-birthday": show_birthday,
-        "birthdays": birthdays,
-    }
+
     match command:
         case "hello":
             return "How can I help you?"
 
-        case command if command in commands:
-            return commands[command](args, book)
+        case command if command in COMMANDS:
+            return COMMANDS[command](args, book)
 
         case _:
             return "Invalid command."
