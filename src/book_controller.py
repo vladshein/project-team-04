@@ -128,11 +128,11 @@ def show_all(_: List[str], book: AddressBook) -> str:
     """
     if not book.data:
         return "Sorry, your phone book is empty."
-    else:
-        all_contacts = ""
-        for _, phone in book.data.items():
-            all_contacts += f"{phone}\n"
-        return all_contacts.strip()
+
+    all_contacts = ""
+    for _, phone in book.data.items():
+        all_contacts += f"{phone}\n"
+    return all_contacts.strip()
 
 
 @input_error
