@@ -26,7 +26,6 @@ def execute_command(command: str, args: list, book: AddressBook) -> str:
     Returns:
         str: The result of the command execution.
     """
-    
     commands = {
         "add": add_contact,
         "change": change_contact,
@@ -42,6 +41,6 @@ def execute_command(command: str, args: list, book: AddressBook) -> str:
 
         case command if command in commands:
             return commands[command](args, book)
-        
+
         case _:
             return "Invalid command."

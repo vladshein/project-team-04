@@ -13,7 +13,7 @@ def main():
 
     book = load_data()
     print("Welcome to the assistant bot!")
-    
+
     while True:
         user_input = input("Enter a command: ")
         command, args = parse_input(user_input)
