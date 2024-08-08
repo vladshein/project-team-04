@@ -1,9 +1,12 @@
+"""
+book controller
+"""
 
 import pickle
 from typing import Callable, List, Tuple
 
 from src.models.address_book import AddressBook, Record
-from src.models.fields import PhoneNumberValueError, BirthdayValueError
+from src.models.fields import PhoneNumberValueError, BirthdayValueError, NameValueError
 
 
 def input_error(func: Callable) -> Callable:
@@ -20,7 +23,7 @@ def input_error(func: Callable) -> Callable:
     def inner(*args, **kwargs):
         try:
             return func(*args, **kwargs)
-        except (PhoneNumberValueError, BirthdayValueError) as e:
+        except (PhoneNumberValueError, BirthdayValueError, NameValueError) as e:
             return e
         except ValueError:
             return """Incorrect input command argument: add [name][phone],
@@ -36,13 +39,13 @@ def input_error(func: Callable) -> Callable:
 
 def parse_input(user_input: str) -> Tuple[str, List[str]]:
     """
-    Parse user input into a command and its arguments.
+        Parse user input into a command and its arguments.
+    NameValueError
+        Args:
+            user_input (str): The raw input from the user.
 
-    Args:
-        user_input (str): The raw input from the user.
-
-    Returns:
-        Tuple[str, List[str]]: The command and list of arguments.
+        Returns:
+            Tuple[str, List[str]]: The command and list of arguments.
     """
     cmd, *args = user_input.split()
     cmd = cmd.strip().lower()

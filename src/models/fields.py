@@ -6,12 +6,22 @@ import re
 from datetime import datetime
 
 
+class NameValueError(Exception):
+    """
+    custom Error for incorrect input name
+    """
+
+
 class PhoneNumberValueError(Exception):
-    pass
+    """
+    custom Error for incorrect input Phone number
+    """
 
 
 class BirthdayValueError(Exception):
-    pass
+    """
+    custom Error for incorrect input birthday date
+    """
 
 
 class Field:
@@ -46,8 +56,10 @@ class Name(Field):
     Class for storing a contact's name. Inherits from Field.
     """
 
-    def __str__(self) -> str:
-        return str(self.value)
+    def __init__(self, name: str) -> None:
+        if len(name) < 2:
+            raise NameValueError("The name must be more than two characters long")
+        super().__init__(name)
 
 
 class Phone(Field):
