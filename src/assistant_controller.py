@@ -2,6 +2,7 @@
 assistant controller
 """
 
+from difflib import get_close_matches
 from src.models.address_book import AddressBook
 from src.book_controller import (
     add_contact,
@@ -22,6 +23,21 @@ COMMANDS = {
     "show-birthday": show_birthday,
     "birthdays": birthdays,
 }
+
+
+def suggest_command(command, available_commands):
+    """
+    Suggest the closest matching command based on user input.
+
+    Args:
+        command (str): The command to match.
+        available_commands (list): List of available command strings.
+
+    Returns:
+        str: The closest matching command.
+    """
+    matches = get_close_matches(command, available_commands, n=1, cutoff=0.6)
+    return matches[0] if matches else None
 
 
 def execute_command(command: str, args: list, book: AddressBook) -> str:
@@ -45,4 +61,10 @@ def execute_command(command: str, args: list, book: AddressBook) -> str:
             return COMMANDS[command](args, book)
 
         case _:
-            return "Invalid command."
+            suggested_command = suggest_command(
+                command, list(COMMANDS.keys()) + ["hello", "close", "exit"]
+            )
+            if suggested_command:
+                return f"Invalid command. Did you mean '{suggested_command}'?"
+            else:
+                return "Invalid command."

@@ -55,6 +55,8 @@ class Record:
         phone_to_remove = self.find_phone(phone_number)
         if phone_to_remove:
             self.phones.remove(phone_to_remove)
+        else:
+            raise PhoneNumberValueError("Phone number not found")
 
     def edit_phone(self, old_number: str, new_number: str) -> None:
         """
