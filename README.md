@@ -1,2 +1,2 @@
-# goit-pycore-hw-08
-goit-pycore-hw-08
+# personal assistant team project
+personal assistant team project
