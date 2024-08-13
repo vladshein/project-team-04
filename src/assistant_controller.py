@@ -12,6 +12,11 @@ from src.book_controller import (
     add_birthday,
     show_birthday,
     birthdays,
+    add_note_to_contact,
+    edit_note_in_contact,
+    remove_note_from_contact,
+    show_notes_for_contact,
+    find_notes_by_keyword,
 )
 
 COMMANDS = {
@@ -22,6 +27,11 @@ COMMANDS = {
     "add-birthday": add_birthday,
     "show-birthday": show_birthday,
     "birthdays": birthdays,
+    "add-note": add_note_to_contact,
+    "edit-note": edit_note_in_contact,
+    "remove-note": remove_note_from_contact,
+    "show-notes": show_notes_for_contact,
+    "find-notes": find_notes_by_keyword,
 }
 
 
