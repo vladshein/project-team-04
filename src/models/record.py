@@ -3,7 +3,7 @@ class Record
 """
 
 import re
-from src.models.fields import Name, Birthday, Phone, PhoneNumberValueError
+from src.models.fields import Name, Birthday, Phone, Note, PhoneNumberValueError, NoteValueError
 
 
 class Record:
@@ -26,6 +26,8 @@ class Record:
         self.name = Name(name)
         self.phones = []
         self.birthday = None
+        self.notes = []
+
 
     def add_birthday(self, birthday: str) -> None:
         """
@@ -88,6 +90,63 @@ class Record:
             if phone.value == phone_number:
                 return phone
         return None
+    
+    def add_note(self, note: str, name: str = None) -> None:
+        """
+        Adds a new note to the record with an optional name.
+
+        Args:
+            note (str): The content of the note to add.
+            name (str, optional): The name associated with the note.
+        """
+        self.notes.append(Note(note, name))
+
+    def edit_note(self, old_name: str, new_note: str) -> None:
+        """
+        Edits an existing note in the record by note name.
+
+        Args:
+            old_name (str): The name of the note to be replaced.
+            new_note (str): The new content to replace the old note.
+        Raises:
+            NoteValueError: If the new note is empty or the old note is not found.
+        """
+        for i, note in enumerate(self.notes):
+            if note.name == old_name:
+                if not new_note:
+                    raise NoteValueError("Note cannot be empty")
+                self.notes[i] = Note(new_note, note.name)
+                return
+        raise NoteValueError("Note with the given name not found")
+
+    def remove_note_by_name(self, name: str) -> None:
+        """
+        Removes a note from the record by name.
+
+        Args:
+            name (str): The name associated with the note to remove.
+
+        Raises:
+            NoteValueError: If no note with the given name is found.
+        """
+        for i, existing_note in enumerate(self.notes):
+            if existing_note.name == name:
+                del self.notes[i]
+                return
+        
+        raise NoteValueError(f"Note with the name '{name}' not found")
+    
+    def find_note_by_keyword(self, keyword: str) -> list:
+        """
+        Finds notes containing a specific keyword.
+
+        Args:
+            keyword (str): The keyword to search for in the notes.
+
+        Returns:
+            list: A list of notes that contain the keyword.
+        """
+        return [note for note in self.notes if keyword in note.value]
 
     def __str__(self) -> str:
         """
