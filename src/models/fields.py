@@ -23,10 +23,12 @@ class BirthdayValueError(Exception):
     custom Error for incorrect input birthday date
     """
 
+
 class NoteValueError(Exception):
     """
     Custom error for incorrect input note.
     """
+
 
 class Field:
     """
@@ -131,12 +133,13 @@ class Birthday(Field):
             str: The birthday in the format "DD.MM.YYYY".
         """
         return f"Birthday: {self.value.strftime('%d.%m.%Y')}"
-    
+
 
 class Note(Field):
     """
     Class for storing a note associated with a contact, including a name.
     """
+
     def __init__(self, value: str, name: str = None):
         if len(value) < 1:
             raise NoteValueError("Note cannot be empty")
@@ -146,7 +149,7 @@ class Note(Field):
     def __str__(self) -> str:
         """
         Returns a string representation of the note, including its name if provided.
-        
+
         Returns:
             str: The note content, and if available, the name.
         """
