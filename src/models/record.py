@@ -108,8 +108,6 @@ class Record:
         Args:
             old_name (str): The name of the note to be replaced.
             new_note (str): The new content to replace the old note.
-            new_name (str, optional): The new name associated with the note.
-
         Raises:
             NoteValueError: If the new note is empty or the old note is not found.
         """
