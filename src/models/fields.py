@@ -30,6 +30,18 @@ class NoteValueError(Exception):
     """
 
 
+class EmailValueError(Exception):
+    """
+    custom Error for incorrect input Email
+    """
+
+
+class AddressValueError(Exception):
+    """
+    custom Error for incorrect input Address
+    """
+
+
 class Field:
     """
     Base class for storing field values of a record.
@@ -156,3 +168,44 @@ class Note(Field):
         if self.name:
             return f"{self.name}: '{self.value}'"
         return f"Note: '{self.value}'"
+    
+class Email(Field):
+    """
+    Class for storing an Email. Inherits from Field.
+    Validates the email format (xxxxx@xx.xx).
+    """
+
+    def __init__(self, value: str):
+        """
+        Initializes the Email with validation.
+
+        Args:
+            value (str): The Email.
+
+        Raises:
+            ValueError: If the Email does not match the format (xxxxx@xx.xx).
+        """        
+        if not re.fullmatch(r"^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w+$", value):
+            raise EmailValueError("Invalid Email")
+        super().__init__(value)
+
+
+class Address(Field):
+    """
+    Class for storing an Address. Inherits from Field.
+    Validates that field is not empty.
+    """
+
+    def __init__(self, address: str):
+        """
+        Initializes the Address with validation.
+
+        Args:
+            value (str): The Address.
+
+        Raises:
+            ValueError: If the Address is empty.
+        """        
+        if len(address) < 4:
+            raise AddressValueError("The address must be more than four characters long")
+        super().__init__(address)

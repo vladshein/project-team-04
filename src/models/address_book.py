@@ -42,7 +42,7 @@ class AddressBook(UserDict):
         if name in self.data:
             del self.data[name]
 
-    def get_upcoming_birthdays(self) -> list[dict[str, str]]:
+    def get_upcoming_birthdays(self, days_quantity:int =7) -> list[dict[str, str]]:
         """
         Returns a list of users with upcoming birthdays, including the congratulation date.
 
@@ -62,8 +62,8 @@ class AddressBook(UserDict):
                 if birthday_this_year < today:
                     birthday_this_year = birthday_this_year.replace(year=today.year + 1)
 
-                # Check if the birthday is within the next 7 days
-                if 0 <= (birthday_this_year - today).days <= 7:
+                # Check if the birthday is within the next x days
+                if 0 <= (birthday_this_year - today).days <= days_quantity:
                     # Adjust the birthday to avoid weekends
                     while birthday_this_year.weekday() in [5, 6]:
                         birthday_this_year += timedelta(days=1)

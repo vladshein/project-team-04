@@ -6,7 +6,7 @@ import pickle
 from typing import Callable, List, Tuple
 
 from src.models.address_book import AddressBook, Record
-from src.models.fields import PhoneNumberValueError, BirthdayValueError, NameValueError
+from src.models.fields import PhoneNumberValueError, BirthdayValueError, NameValueError, EmailValueError, AddressValueError
 
 
 def input_error(func: Callable) -> Callable:
@@ -23,7 +23,7 @@ def input_error(func: Callable) -> Callable:
     def inner(*args, **kwargs):
         try:
             return func(*args, **kwargs)
-        except (PhoneNumberValueError, BirthdayValueError, NameValueError) as e:
+        except (PhoneNumberValueError, BirthdayValueError, NameValueError, EmailValueError, AddressValueError) as e:
             return e
         except ValueError:
             return """Incorrect input command argument: add [name][phone],
@@ -32,7 +32,8 @@ def input_error(func: Callable) -> Callable:
                     add-note[name][note name][note content],
                     edit-note[name][note name][new content],
                     remove-note[name][note name],
-                    show-notes[name], find-notes[keyword]"""
+                    show-notes[name], find-notes[keyword],
+                    add-email[name][email], add-address[name][address]"""
         except KeyError:
             return "Contact not found or no contact information."
         except IndexError:
@@ -179,7 +180,7 @@ def show_birthday(args: List[str], book: AddressBook) -> str:
 
 
 @input_error
-def birthdays(_: list[str], book: AddressBook) -> str:
+def birthdays(args: list[str], book: AddressBook) -> str:
     """
     Show upcoming birthdays.
 
@@ -189,7 +190,11 @@ def birthdays(_: list[str], book: AddressBook) -> str:
     Returns:
         str: List of upcoming birthdays or a message indicating none.
     """
-    upcoming_birthdays = book.get_upcoming_birthdays()
+    if args:
+        days = int(args[0])
+        upcoming_birthdays = book.get_upcoming_birthdays(days)
+    else: 
+        upcoming_birthdays = book.get_upcoming_birthdays()
     upcoming = ""
     if upcoming_birthdays:
         for birthday in upcoming_birthdays:
@@ -348,3 +353,21 @@ def find_notes_by_keyword(args: List[str], book: AddressBook) -> str:
         return "\n".join(f"Contact: {contact_name}, Note Name: {note_name}, Note: {note_value}" 
                          for contact_name, note_name, note_value in notes_found)
     return "No notes found containing the keyword."
+
+@input_error
+def add_email(args, book: AddressBook):
+    name, email = args
+    record = book.find(name)
+    if not record:
+        raise KeyError
+    record.add_email(email)
+    return "Email added."
+
+@input_error
+def add_address(args, book: AddressBook):
+    name, address = args
+    record = book.find(name)
+    if not record:
+        raise KeyError
+    record.add_address(address)
+    return "Address added."
