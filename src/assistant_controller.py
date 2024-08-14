@@ -18,6 +18,8 @@ from src.book_controller import (
     remove_note_from_contact,
     show_notes_for_contact,
     find_notes_by_keyword,
+    add_email,
+    add_address
 )
 
 COMMANDS = {
@@ -36,6 +38,8 @@ COMMANDS = {
     "exit": "",
     "close": "",
     "hello": "",
+    "add-email": add_email,
+    "add-address": add_address
 }
 
 

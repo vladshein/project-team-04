@@ -3,7 +3,7 @@ class Record
 """
 
 import re
-from src.models.fields import Name, Birthday, Phone, Note, PhoneNumberValueError, NoteValueError
+from src.models.fields import Name, Birthday, Phone, Note, PhoneNumberValueError, NoteValueError, Email, Address
 
 
 class Record:
@@ -27,6 +27,8 @@ class Record:
         self.phones = []
         self.birthday = None
         self.notes = []
+        self.email = None
+        self.address = None        
 
 
     def add_birthday(self, birthday: str) -> None:
@@ -148,6 +150,24 @@ class Record:
         """
         return [note for note in self.notes if keyword in note.value]
 
+    def add_email(self, email: str) -> None:
+        """
+        Adds a Email to the record.
+
+        Args:
+            email (str): The email to add.
+        """
+        self.email = Email(email)
+
+    def add_address(self, address: str) -> None:
+        """
+        Adds an address to the record.
+
+        Args:
+            address (str): The address to add.
+        """
+        self.address = Address(address)   
+
     def __str__(self) -> str:
         """
         Returns a string representation of the record.
@@ -157,6 +177,10 @@ class Record:
         """
         phone_list = "; ".join(p.value for p in self.phones)
         birthday_str = f", {self.birthday}" if self.birthday else ""
+        email_str = f" {self.email}" if self.email else "-"
+        address_str = f" {self.address}" if self.address else "-"
         return (
-            f"Contact name: {self.name.value:<10}| phones: {phone_list}{birthday_str}"
+            f"Contact name: {self.name.value:<10}| phones: {phone_list:<10}| birthday: {birthday_str:<5}| email: {email_str:<5}| address: {address_str:<5}"
         )
+        
+
