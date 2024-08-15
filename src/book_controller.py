@@ -37,19 +37,10 @@ def input_error(func: Callable) -> Callable:
             AddressValueError,
         ) as e:
             return e
-        except ValueError:
-            return """Incorrect input command argument: add [name][phone],
-                    change[name][old][new], phone[name],
-                    add-birthday[name][date], show-birthday[name],
-                    add-note[name][note name][note content],
-                    edit-note[name][note name][new content],
-                    remove-note[name][note name],
-                    show-notes[name], find-notes[keyword],
-                    add-email[name][email], add-address[name][address]"""
+        except ValueError as e:
+            return e
         except KeyError:
             return "Contact not found or no contact information."
-        except IndexError:
-            return "Enter user name."
 
     return inner
 
@@ -81,7 +72,12 @@ def add_contact(args: List[str], book: AddressBook) -> str:
     Returns:
         str: Success message indicating contact addition or update.
     """
-    name, phone, *_ = args
+    try:
+        name, phone, *_ = args
+    except ValueError as e:
+        raise ValueError(
+            "Incorrect input command argument. Use: 'add [name] [phone_number]'"
+        ) from e
     record = book.find(name)
     message = "Contact updated."
     if record is None:
@@ -89,7 +85,15 @@ def add_contact(args: List[str], book: AddressBook) -> str:
         book.add_record(record)
         message = "Contact added."
     if phone:
-        record.add_phone(phone)
+        if record.find_phone(phone):
+            return "This phone number already exists."
+        try:
+            record.add_phone(phone)
+        except PhoneNumberValueError:
+            if message == "Contact updated.":
+                message = "The contact was not updated because you entered an incorrect phone number."
+            else:
+                message = "Contact added without a phone number because you entered an incorrect phone number."
     return message
 
 
@@ -156,10 +160,17 @@ def change_contact(args: List[str], book: AddressBook) -> str:
     Returns:
         str: Success or error message.
     """
-    name, old_phone, new_phone, *_ = args
+    try:
+        name, old_phone, new_phone, *_ = args
+    except ValueError as e:
+        raise ValueError(
+            "Incorrect input command argument. Use: 'change [name] [old_number] [new_number]'"
+        ) from e
     record = book.find(name)
     if not record:
         raise KeyError
+    if record.find_phone(new_phone):
+        return f"This phone number: {new_phone} already exists."
     record.edit_phone(old_phone, new_phone)
     return f"Contact {name} updated."
 
@@ -176,7 +187,12 @@ def show_phone(args: List[str], book: AddressBook) -> str:
     Returns:
         str: The phone number or an error message.
     """
-    name, *_ = args
+    try:
+        name, *_ = args
+    except ValueError as e:
+        raise ValueError(
+            "Incorrect input command argument. Use: 'phone [name] [old_number] [new_number]'"
+        ) from e
     record = book.find(name)
     if not record:
         raise KeyError
@@ -215,7 +231,12 @@ def add_birthday(args: List[str], book: AddressBook) -> str:
         Returns:
             str: Success message indicating birthday addition.
     """
-    name, birthday, *_ = args
+    try:
+        name, birthday, *_ = args
+    except ValueError as e:
+        raise ValueError(
+            "Incorrect input command argument. Use: 'add_birthday [name] [DD.MM.YYYY]'"
+        ) from e
     record = book.find(name)
     if not record:
         raise KeyError
@@ -235,7 +256,12 @@ def show_birthday(args: List[str], book: AddressBook) -> str:
     Returns:
         str: The birthday or an error message.
     """
-    name, *_ = args
+    try:
+        name, *_ = args
+    except ValueError as e:
+        raise ValueError(
+            "Incorrect input command argument. Use: 'show_birthday [name]'"
+        ) from e
     record = book.find(name)
     if not record or not record.birthday:
         raise KeyError
@@ -388,7 +414,12 @@ def show_notes_for_contact(args: List[str], book: AddressBook) -> str:
     Returns:
         str: All notes for the contact or an error message.
     """
-    name, *_ = args
+    try:
+        name, *_ = args
+    except ValueError as e:
+        raise ValueError(
+            "Incorrect input command argument. Use: 'show-notes [name]'"
+        ) from e
     record = book.find(name)
     if not record or not record.notes:
         raise KeyError
@@ -433,7 +464,12 @@ def find_notes_by_keyword(args: List[str], book: AddressBook) -> str:
 
 @input_error
 def add_email(args, book: AddressBook):
-    name, email = args
+    try:
+        name, email = args
+    except ValueError as e:
+        raise ValueError(
+            "Incorrect input command argument. Use: 'add_email [name] [email]'"
+        ) from e
     record = book.find(name)
     if not record:
         raise KeyError
@@ -443,7 +479,12 @@ def add_email(args, book: AddressBook):
 
 @input_error
 def add_address(args, book: AddressBook):
-    name, address = args
+    try:
+        name, *address = args
+    except ValueError as e:
+        raise ValueError(
+            "Incorrect input command argument. Use: 'add_address [address]'"
+        ) from e
     record = book.find(name)
     if not record:
         raise KeyError
