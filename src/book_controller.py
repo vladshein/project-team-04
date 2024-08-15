@@ -85,7 +85,15 @@ def add_contact(args: List[str], book: AddressBook) -> str:
         book.add_record(record)
         message = "Contact added."
     if phone:
-        record.add_phone(phone)
+        if record.find_phone(phone):
+            return "This phone number already exists."
+        try:
+            record.add_phone(phone)
+        except PhoneNumberValueError:
+            if message == "Contact updated.":
+                message = "The contact was not updated because you entered an incorrect phone number."
+            else:
+                message = "Contact added without a phone number because you entered an incorrect phone number."
     return message
 
 
@@ -110,6 +118,8 @@ def change_contact(args: List[str], book: AddressBook) -> str:
     record = book.find(name)
     if not record:
         raise KeyError
+    if record.find_phone(new_phone):
+        return f"This phone number: {new_phone} already exists."
     record.edit_phone(old_phone, new_phone)
     return f"Contact {name} updated."
 
