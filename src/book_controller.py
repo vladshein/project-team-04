@@ -6,7 +6,13 @@ import pickle
 from typing import Callable, List, Tuple
 
 from src.models.address_book import AddressBook, Record
-from src.models.fields import PhoneNumberValueError, BirthdayValueError, NameValueError, EmailValueError, AddressValueError
+from src.models.fields import (
+    PhoneNumberValueError,
+    BirthdayValueError,
+    NameValueError,
+    EmailValueError,
+    AddressValueError,
+)
 
 
 def input_error(func: Callable) -> Callable:
@@ -23,7 +29,13 @@ def input_error(func: Callable) -> Callable:
     def inner(*args, **kwargs):
         try:
             return func(*args, **kwargs)
-        except (PhoneNumberValueError, BirthdayValueError, NameValueError, EmailValueError, AddressValueError) as e:
+        except (
+            PhoneNumberValueError,
+            BirthdayValueError,
+            NameValueError,
+            EmailValueError,
+            AddressValueError,
+        ) as e:
             return e
         except ValueError:
             return """Incorrect input command argument: add [name][phone],
@@ -79,6 +91,50 @@ def add_contact(args: List[str], book: AddressBook) -> str:
     if phone:
         record.add_phone(phone)
     return message
+
+
+@input_error
+def remove_contact(args: List[str], book: AddressBook) -> str:
+    """
+    Delete contact.
+
+    Args:
+        args (List[str]): List containing the name and phone number.
+        book (AddressBook): The address book instance.
+
+    Returns:
+        str: Success message indicating contact deleted.
+    """
+    try:
+        name, *_ = args
+    except ValueError as e:
+        raise ValueError(
+            "Incorrect input command argument. Use: 'delete [name]'"
+        ) from e
+    record = book.find(name)
+    if not record:
+        raise KeyError
+    answer = input("Are you sure you want to delete a contact ? y/n \n")
+    if answer.lower() == "y":
+        book.delete(name)
+        return f"Contact {name} deleted"
+    return f"Contact {name} not deleted"
+
+
+@input_error
+def remove_phone(args: List[str], book: AddressBook) -> str:
+    """ """
+    try:
+        name, phone, *_ = args
+    except ValueError as e:
+        raise ValueError(
+            "Incorrect input command argument. Use: 'delete-phone [name] [phone]'"
+        ) from e
+    record = book.find(name)
+    if not record:
+        raise KeyError
+    record.remove_phone(phone)
+    return "Phone number deleted"
 
 
 @input_error
@@ -193,7 +249,7 @@ def birthdays(args: list[str], book: AddressBook) -> str:
     if args:
         days = int(args[0])
         upcoming_birthdays = book.get_upcoming_birthdays(days)
-    else: 
+    else:
         upcoming_birthdays = book.get_upcoming_birthdays()
     upcoming = ""
     if upcoming_birthdays:
@@ -221,7 +277,7 @@ def load_data(filename: str = "addressbook.pkl"):
             return pickle.load(f)
     except FileNotFoundError:
         return AddressBook()
-    
+
 
 @input_error
 def add_note_to_contact(args: List[str], book: AddressBook) -> str:
@@ -236,16 +292,20 @@ def add_note_to_contact(args: List[str], book: AddressBook) -> str:
         str: Success message indicating note addition.
     """
     if len(args) < 3:
-        raise ValueError("Insufficient arguments provided. Expected contact name, note name, and note content.")
-    
+        raise ValueError(
+            "Insufficient arguments provided. Expected contact name, note name, and note content."
+        )
+
     contact_name = args[0]
     note_name = args[1]
-    note_content = " ".join(args[2:])  # Join the rest of the arguments as the note content
+    note_content = " ".join(
+        args[2:]
+    )  # Join the rest of the arguments as the note content
 
     record = book.find(contact_name)
     if not record:
         raise KeyError(f"Contact with name '{contact_name}' not found.")
-    
+
     record.add_note(note_content, note_name)
     return "Note added."
 
@@ -263,16 +323,20 @@ def edit_note_in_contact(args: List[str], book: AddressBook) -> str:
         str: Success message indicating note update.
     """
     if len(args) < 3:
-        raise ValueError("Insufficient arguments provided. Expected contact name, note name to edit, and new note content.")
-    
+        raise ValueError(
+            "Insufficient arguments provided. Expected contact name, note name to edit, and new note content."
+        )
+
     contact_name = args[0]
     note_name = args[1]
-    new_note_content = " ".join(args[2:])  # Join the rest of the arguments as the new note content
+    new_note_content = " ".join(
+        args[2:]
+    )  # Join the rest of the arguments as the new note content
 
     record = book.find(contact_name)
     if not record:
         raise KeyError(f"Contact with name '{contact_name}' not found.")
-    
+
     record.edit_note(note_name, new_note_content)
     return "Note updated."
 
@@ -290,15 +354,17 @@ def remove_note_from_contact(args: List[str], book: AddressBook) -> str:
         str: Success message indicating note removal.
     """
     if len(args) < 2:
-        raise ValueError("Insufficient arguments provided. Expected contact name and note name.")
-    
+        raise ValueError(
+            "Insufficient arguments provided. Expected contact name and note name."
+        )
+
     contact_name = args[0]
     note_name = args[1]
 
     record = book.find(contact_name)
     if not record:
         raise KeyError(f"Contact with name '{contact_name}' not found.")
-    
+
     record.remove_note_by_name(note_name)
     return "Note removed."
 
@@ -322,6 +388,7 @@ def show_notes_for_contact(args: List[str], book: AddressBook) -> str:
     notes = "\n".join(str(note) for note in record.notes)
     return f"Notes for {name}:\n{notes}"
 
+
 @input_error
 def find_notes_by_keyword(args: List[str], book: AddressBook) -> str:
     """
@@ -336,7 +403,7 @@ def find_notes_by_keyword(args: List[str], book: AddressBook) -> str:
     """
     if not args:
         raise ValueError("No keyword provided. Please provide a keyword to search.")
-    
+
     keyword = args[0]
     notes_found = []
 
@@ -347,12 +414,15 @@ def find_notes_by_keyword(args: List[str], book: AddressBook) -> str:
         if notes:
             for note in notes:
                 notes_found.append((record.name.value, note.name, note.value))
-    
+
     # Format the output
     if notes_found:
-        return "\n".join(f"Contact: {contact_name}, Note Name: {note_name}, Note: {note_value}" 
-                         for contact_name, note_name, note_value in notes_found)
+        return "\n".join(
+            f"Contact: {contact_name}, Note Name: {note_name}, Note: {note_value}"
+            for contact_name, note_name, note_value in notes_found
+        )
     return "No notes found containing the keyword."
+
 
 @input_error
 def add_email(args, book: AddressBook):
@@ -362,6 +432,7 @@ def add_email(args, book: AddressBook):
         raise KeyError
     record.add_email(email)
     return "Email added."
+
 
 @input_error
 def add_address(args, book: AddressBook):
