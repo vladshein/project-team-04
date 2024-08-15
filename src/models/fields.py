@@ -144,7 +144,7 @@ class Birthday(Field):
         Returns:
             str: The birthday in the format "DD.MM.YYYY".
         """
-        return f"Birthday: {self.value.strftime('%d.%m.%Y')}"
+        return f"{self.value.strftime('%d.%m.%Y')}"
 
 
 class Note(Field):

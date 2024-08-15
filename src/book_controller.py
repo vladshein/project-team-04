@@ -3,7 +3,10 @@ book controller
 """
 
 import pickle
+import os
 from typing import Callable, List, Tuple
+from tabulate import tabulate
+
 
 from src.models.address_book import AddressBook, Record
 from src.models.fields import PhoneNumberValueError, BirthdayValueError, NameValueError, EmailValueError, AddressValueError
@@ -56,6 +59,13 @@ def parse_input(user_input: str) -> Tuple[str, List[str]]:
     cmd = cmd.strip().lower()
     return cmd, args
 
+def clear_screen():
+    # For Windows
+    if os.name == 'nt':
+        os.system('cls')
+    # For macOS and Linux
+    else:
+        os.system('clear')
 
 @input_error
 def add_contact(args: List[str], book: AddressBook) -> str:
@@ -134,11 +144,31 @@ def show_all(_: List[str], book: AddressBook) -> str:
     if not book.data:
         return "Sorry, your phone book is empty."
 
-    all_contacts = ""
+    header_list = ["Name", "Phones", "Birthday", "E-mail", "Address", "Notes"]
+    #all_contacts = ""
+    # for _, phone in book.data.items():
+    #     all_contacts += f"{phone}\n"
+    #return all_contacts.strip()
+        # phone_list = "; ".join(p.value for p in self.phones)
+        # birthday_str = f", {self.birthday}" if self.birthday else ""
+        # email_str = f" {self.email}" if self.email else "-"
+        # address_str = f" {self.address}" if self.address else "-"
+    
+    record_list = []
     for _, phone in book.data.items():
-        all_contacts += f"{phone}\n"
-    return all_contacts.strip()
-
+         record = []
+         record.append(phone.name.value)
+         record.append("; ".join(p.value for p in phone.phones))
+         record.append(phone.birthday.value if phone.birthday else "")
+         record.append(phone.email.value if phone.email else "")
+         record.append(phone.address.value if phone.address else "")
+         record_list.append(record)
+    #print(record)
+    #print(record_list)
+    
+    table_list = [header_list, record_list]
+    print(tabulate(record_list, header_list, tablefmt = "fancy_grid"))
+    return "End of contacts list"
 
 @input_error
 def add_birthday(args: List[str], book: AddressBook) -> str:
