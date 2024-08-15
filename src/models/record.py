@@ -3,7 +3,7 @@ class Record
 """
 
 import re
-from src.models.fields import Name, Birthday, Phone, Note, PhoneNumberValueError, NoteValueError, Email, Address
+from src.models.fields import Name, Birthday, Phone, Note, Email, Address, PhoneNumberValueError, NoteValueError
 
 
 class Record:
