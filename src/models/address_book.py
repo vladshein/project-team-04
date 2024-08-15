@@ -42,7 +42,7 @@ class AddressBook(UserDict):
         if name in self.data:
             del self.data[name]
 
-    def get_upcoming_birthdays(self, days_quantity:int =7) -> list[dict[str, str]]:
+    def get_upcoming_birthdays(self, days_quantity:int = 7) -> list[dict[str, str]]:
         """
         Returns a list of users with upcoming birthdays, including the congratulation date.
 
