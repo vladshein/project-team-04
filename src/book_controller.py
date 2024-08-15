@@ -123,7 +123,14 @@ def remove_contact(args: List[str], book: AddressBook) -> str:
 
 @input_error
 def remove_phone(args: List[str], book: AddressBook) -> str:
-    """ """
+    """Remove the phone number of existing contact.
+        Args:
+        args (List[str]): List containing the name, old phone number, and new phone number.
+        book (AddressBook): The address book instance.
+
+    Returns:
+        str: Success or error message.
+    """
     try:
         name, phone, *_ = args
     except ValueError as e:
