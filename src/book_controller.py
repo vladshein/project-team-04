@@ -98,6 +98,57 @@ def add_contact(args: List[str], book: AddressBook) -> str:
 
 
 @input_error
+def remove_contact(args: List[str], book: AddressBook) -> str:
+    """
+    Delete contact.
+
+    Args:
+        args (List[str]): List containing the name and phone number.
+        book (AddressBook): The address book instance.
+
+    Returns:
+        str: Success message indicating contact deleted.
+    """
+    try:
+        name, *_ = args
+    except ValueError as e:
+        raise ValueError(
+            "Incorrect input command argument. Use: 'delete [name]'"
+        ) from e
+    record = book.find(name)
+    if not record:
+        raise KeyError
+    answer = input("Are you sure you want to delete a contact ? y/n \n")
+    if answer.lower() == "y":
+        book.delete(name)
+        return f"Contact {name} deleted"
+    return f"Contact {name} not deleted"
+
+
+@input_error
+def remove_phone(args: List[str], book: AddressBook) -> str:
+    """Remove the phone number of existing contact.
+        Args:
+        args (List[str]): List containing the name, old phone number, and new phone number.
+        book (AddressBook): The address book instance.
+
+    Returns:
+        str: Success or error message.
+    """
+    try:
+        name, phone, *_ = args
+    except ValueError as e:
+        raise ValueError(
+            "Incorrect input command argument. Use: 'delete-phone [name] [phone]'"
+        ) from e
+    record = book.find(name)
+    if not record:
+        raise KeyError
+    record.remove_phone(phone)
+    return "Phone number deleted"
+
+
+@input_error
 def change_contact(args: List[str], book: AddressBook) -> str:
     """
     Change the phone number of an existing contact.
