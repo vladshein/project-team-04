@@ -126,7 +126,7 @@ def remove_contact(args: List[str], book: AddressBook) -> str:
         name, *_ = args
     except ValueError as e:
         raise ValueError(
-            "Incorrect input command argument. Use: 'delete [name]'"
+            "Incorrect input command argument. Use: 'remove-contact [name]'"
         ) from e
     record = book.find(name)
     if not record:
@@ -152,7 +152,7 @@ def remove_phone(args: List[str], book: AddressBook) -> str:
         name, phone, *_ = args
     except ValueError as e:
         raise ValueError(
-            "Incorrect input command argument. Use: 'delete-phone [name] [phone]'"
+            "Incorrect input command argument. Use: 'remove-phone [name] [phone]'"
         ) from e
     record = book.find(name)
     if not record:
@@ -511,11 +511,14 @@ def find_notes_by_keyword(args: List[str], book: AddressBook) -> str:
 
 @input_error
 def add_email(args, book: AddressBook):
+    """
+    Add a email to an existing contact.
+    """
     try:
         name, email = args
     except ValueError as e:
         raise ValueError(
-            "Incorrect input command argument. Use: 'add_email [name] [email]'"
+            "Incorrect input command argument. Use: 'add-email [name] [email]'"
         ) from e
     record = book.find(name)
     if not record:
@@ -526,11 +529,14 @@ def add_email(args, book: AddressBook):
 
 @input_error
 def add_address(args, book: AddressBook):
+    """
+    Add a address to an existing contact.
+    """
     try:
         name, *address = args
     except ValueError as e:
         raise ValueError(
-            "Incorrect input command argument. Use: 'add_address [address]'"
+            "Incorrect input command argument. Use: 'add-address [name] [address]'"
         ) from e
     record = book.find(name)
     if not record:
