@@ -14,6 +14,7 @@ from src.models.fields import (
     NameValueError,
     EmailValueError,
     AddressValueError,
+    NoteValueError,
 )
 
 
@@ -37,6 +38,7 @@ def input_error(func: Callable) -> Callable:
             NameValueError,
             EmailValueError,
             AddressValueError,
+            NoteValueError,
         ) as e:
             return e
         except ValueError as e:
@@ -61,13 +63,15 @@ def parse_input(user_input: str) -> Tuple[str, List[str]]:
     cmd = cmd.strip().lower()
     return cmd, args
 
+
 def clear_screen():
     # For Windows
-    if os.name == 'nt':
-        os.system('cls')
+    if os.name == "nt":
+        os.system("cls")
     # For macOS and Linux
     else:
-        os.system('clear')
+        os.system("clear")
+
 
 @input_error
 def add_contact(args: List[str], book: AddressBook) -> str:
@@ -223,19 +227,20 @@ def show_all(_: List[str], book: AddressBook) -> str:
         return "Sorry, your phone book is empty."
 
     header_list = ["Name", "Phones", "Birthday", "E-mail", "Address"]
-    
+
     record_list = []
     for _, phone in book.data.items():
-         record = []
-         record.append(phone.name.value.capitalize())
-         record.append("; ".join(p.value for p in phone.phones))
-         record.append(phone.birthday.value if phone.birthday else "")
-         record.append(phone.email.value if phone.email else "")
-         record.append(phone.address.value if phone.address else "")
-         record_list.append(record)
-    
-    print(tabulate(record_list, header_list, tablefmt = "fancy_grid"))
+        record = []
+        record.append(phone.name.value.capitalize())
+        record.append("; ".join(p.value for p in phone.phones))
+        record.append(phone.birthday.value if phone.birthday else "")
+        record.append(phone.email.value if phone.email else "")
+        record.append(phone.address.value if phone.address else "")
+        record_list.append(record)
+
+    print(tabulate(record_list, header_list, tablefmt="fancy_grid"))
     return "End of contacts list"
+
 
 @input_error
 def add_birthday(args: List[str], book: AddressBook) -> str:
@@ -355,8 +360,8 @@ def add_note_to_contact(args: List[str], book: AddressBook) -> str:
         )  # Join the rest of the arguments as the note content
     except ValueError as e:
         raise ValueError(
-                "Incorrect input command argument. Use: 'add-note [name] [note_name] [note_content]'"
-            ) from e
+            "Incorrect input command argument. Use: 'add-note [name] [note_name] [note_content]'"
+        ) from e
 
     record = book.find(contact_name)
     if not record:
@@ -474,7 +479,9 @@ def find_notes_by_keyword(args: List[str], book: AddressBook) -> str:
         str: List of notes containing the keyword or a message indicating none.
     """
     if not args:
-        raise ValueError("No keyword provided. Please provide a keyword to search. Use: 'find-notes [keyword]'")
+        raise ValueError(
+            "No keyword provided. Please provide a keyword to search. Use: 'find-notes [keyword]'"
+        )
 
     try:
         keyword = args[0]
@@ -538,7 +545,9 @@ def add_tag_to_contact(args: List[str], book: AddressBook):
     Add a tag to a note within an existing contact.
     """
     if len(args) < 3:
-        raise ValueError("Incorrect input command argument. Use: 'add-tag [name] [note_name] [tag_name]'")
+        raise ValueError(
+            "Incorrect input command argument. Use: 'add-tag [name] [note_name] [tag_name]'"
+        )
 
     try:
         contact_name, note_name, tag_name, *_ = args
@@ -553,7 +562,9 @@ def add_tag_to_contact(args: List[str], book: AddressBook):
 
     note = next((note for note in contact.notes if note.name == note_name), None)
     if not note:
-        raise KeyError(f"Note with name '{note_name}' not found in contact '{contact_name}'.")
+        raise KeyError(
+            f"Note with name '{note_name}' not found in contact '{contact_name}'."
+        )
 
     note.add_tag(tag_name)
     return "Tag added successfully."
@@ -565,7 +576,9 @@ def remove_tag_from_contact(args: List[str], book: AddressBook):
     Remove a tag from a note within an existing contact.
     """
     if len(args) < 3:
-        raise ValueError("Incorrect input command argument. Use: 'remove-tag [name] [note_name] [tag_name]'")
+        raise ValueError(
+            "Incorrect input command argument. Use: 'remove-tag [name] [note_name] [tag_name]'"
+        )
 
     try:
         contact_name, note_name, tag_name, *_ = args
@@ -582,7 +595,9 @@ def remove_tag_from_contact(args: List[str], book: AddressBook):
     if not note:
         record = book.find(contact_name)
         if not record:
-            raise KeyError(f"Note with name '{note_name}' not found in contact '{contact_name}'.")
+            raise KeyError(
+                f"Note with name '{note_name}' not found in contact '{contact_name}'."
+            )
         return f"Note with name '{note_name}' not found in contact '{contact_name}'."
 
     try:
@@ -598,7 +613,9 @@ def find_notes_by_tag(args: List[str], book: AddressBook):
     Find notes containing a specific tag.
     """
     if len(args) < 1:
-        raise ValueError("Incorrect input command argument. Use: 'find-notes-by-tag [tag_name]'")
+        raise ValueError(
+            "Incorrect input command argument. Use: 'find-notes-by-tag [tag_name]'"
+        )
 
     try:
         tag, *_ = args
@@ -626,7 +643,9 @@ def show_tags_for_contact(args: List[str], book: AddressBook) -> str:
         str: A list of tags or a message indicating none.
     """
     if len(args) < 1:
-        raise ValueError("Incorrect input command argument. Use: 'show-all-tags [name]'")
+        raise ValueError(
+            "Incorrect input command argument. Use: 'show-all-tags [name]'"
+        )
 
     try:
         contact_name, *_ = args
@@ -650,7 +669,7 @@ def show_tags_for_contact(args: List[str], book: AddressBook) -> str:
 
 
 @input_error
-def show_all_sorted_tags(args: List[str], book: AddressBook) -> str:
+def show_all_sorted_tags(_: List[str], book: AddressBook) -> str:
     """
     Show all unique tags from all contacts, sorted alphabetically.
 
@@ -675,7 +694,7 @@ def show_all_sorted_tags(args: List[str], book: AddressBook) -> str:
 
 
 @input_error
-def show_all_notes_sorted_by_tags(args: List[str], book: AddressBook) -> str:
+def show_all_notes_sorted_by_tags(_: List[str], book: AddressBook) -> str:
     """
     Show all notes sorted by tags across all contacts.
 
@@ -705,4 +724,3 @@ def show_all_notes_sorted_by_tags(args: List[str], book: AddressBook) -> str:
         return "\n".join(result)
 
     return "No notes found in the address book."
-

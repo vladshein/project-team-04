@@ -48,6 +48,8 @@ COMMANDS = {
     "exit": "",
     "close": "",
     "hello": "",
+    "cls": "",
+    "clear": "",
     "add-email": add_email,
     "add-address": add_address,
     "add-tag": add_tag_to_contact,
@@ -138,10 +140,7 @@ def execute_command(command: str, args: list, book: AddressBook) -> str:
             return "How can I help you?"
 
         case command if command in COMMANDS:
-            try:
-                return COMMANDS[command](args, book)
-            except Exception as e:
-                return f"Error: {str(e)}"
+            return COMMANDS[command](args, book)
 
         case _:
             suggested_command = suggest_command(command, list(COMMANDS.keys()))
