@@ -4,9 +4,8 @@ Project team 04
 
 from prompt_toolkit import PromptSession
 from src.assistant_controller import execute_command, CommandCompleter
-from src.book_controller import parse_input, save_data, load_data
-
-
+from src.book_controller import parse_input, save_data, load_data, clear_screen
+ 
 def main():
     """
     Main function to run the assistant bot.
@@ -31,6 +30,9 @@ def main():
             print("Good bye!")
             save_data(book)
             break
+        if command in ["cls", "clear"]:
+            clear_screen()
+            continue
 
         result = execute_command(command, args, book)
         print(result)
