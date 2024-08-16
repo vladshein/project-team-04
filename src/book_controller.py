@@ -7,7 +7,6 @@ import os
 from typing import Callable, List, Tuple
 from tabulate import tabulate
 
-
 from src.models.address_book import AddressBook, Record
 from src.models.fields import (
     PhoneNumberValueError,
@@ -223,29 +222,18 @@ def show_all(_: List[str], book: AddressBook) -> str:
     if not book.data:
         return "Sorry, your phone book is empty."
 
-    header_list = ["Name", "Phones", "Birthday", "E-mail", "Address", "Notes"]
-    #all_contacts = ""
-    # for _, phone in book.data.items():
-    #     all_contacts += f"{phone}\n"
-    #return all_contacts.strip()
-        # phone_list = "; ".join(p.value for p in self.phones)
-        # birthday_str = f", {self.birthday}" if self.birthday else ""
-        # email_str = f" {self.email}" if self.email else "-"
-        # address_str = f" {self.address}" if self.address else "-"
+    header_list = ["Name", "Phones", "Birthday", "E-mail", "Address"]
     
     record_list = []
     for _, phone in book.data.items():
          record = []
-         record.append(phone.name.value)
+         record.append(phone.name.value.capitalize())
          record.append("; ".join(p.value for p in phone.phones))
          record.append(phone.birthday.value if phone.birthday else "")
          record.append(phone.email.value if phone.email else "")
          record.append(phone.address.value if phone.address else "")
          record_list.append(record)
-    #print(record)
-    #print(record_list)
     
-    table_list = [header_list, record_list]
     print(tabulate(record_list, header_list, tablefmt = "fancy_grid"))
     return "End of contacts list"
 

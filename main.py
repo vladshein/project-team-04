@@ -5,7 +5,6 @@ Project team 04
 from prompt_toolkit import PromptSession
 from src.assistant_controller import execute_command, CommandCompleter
 from src.book_controller import parse_input, save_data, load_data, clear_screen
-
  
 def main():
     """
