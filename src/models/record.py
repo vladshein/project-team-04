@@ -3,7 +3,16 @@ class Record
 """
 
 import re
-from src.models.fields import Name, Birthday, Phone, Note, PhoneNumberValueError, NoteValueError, Email, Address
+from src.models.fields import (
+    Name,
+    Birthday,
+    Phone,
+    Note,
+    Email,
+    Address,
+    PhoneNumberValueError,
+    NoteValueError,
+)
 
 
 class Record:
@@ -28,8 +37,7 @@ class Record:
         self.birthday = None
         self.notes = []
         self.email = None
-        self.address = None        
-
+        self.address = None
 
     def add_birthday(self, birthday: str) -> None:
         """
@@ -92,7 +100,7 @@ class Record:
             if phone.value == phone_number:
                 return phone
         return None
-    
+
     def add_note(self, note: str, name: str = None) -> None:
         """
         Adds a new note to the record with an optional name.
@@ -135,9 +143,9 @@ class Record:
             if existing_note.name == name:
                 del self.notes[i]
                 return
-        
+
         raise NoteValueError(f"Note with the name '{name}' not found")
-    
+
     def find_note_by_keyword(self, keyword: str) -> list:
         """
         Finds notes containing a specific keyword.
@@ -166,7 +174,7 @@ class Record:
         Args:
             address (str): The address to add.
         """
-        self.address = Address(address)   
+        self.address = Address(" ".join(address))
 
     def __str__(self) -> str:
         """
@@ -176,11 +184,7 @@ class Record:
             str: The string representation of the record.
         """
         phone_list = "; ".join(p.value for p in self.phones)
-        birthday_str = f", {self.birthday}" if self.birthday else ""
+        birthday_str = f" {self.birthday}" if self.birthday else ""
         email_str = f" {self.email}" if self.email else "-"
         address_str = f" {self.address}" if self.address else "-"
-        return (
-            f"Contact name: {self.name.value:<10}| phones: {phone_list:<10}| birthday: {birthday_str:<5}| email: {email_str:<5}| address: {address_str:<5}"
-        )
-        
-
+        return f"Contact name: {self.name.value:<10}| phones: {phone_list:<10}| birthday: {birthday_str:<12}| email: {email_str:<10}| address: {address_str:<10}"
