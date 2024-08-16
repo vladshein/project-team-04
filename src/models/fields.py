@@ -96,8 +96,10 @@ class Phone(Field):
         Raises:
             ValueError: If the phone number does not match the format (10 digits).
         """
-        if not re.fullmatch(r"\d{10}", value):
-            raise PhoneNumberValueError("Phone number must be 10 digits")
+        if not re.fullmatch(r"0\d{9}", value):
+            raise PhoneNumberValueError(
+                "Phone number must be 10 digits in format: 0XXXXXXXXX"
+            )
         super().__init__(value)
 
 
@@ -116,13 +118,17 @@ class Birthday(Field):
         Raises:
             ValueError: If the birthday does not match the required format.
         """
-        if not re.fullmatch(r"\d{2}\.\d{2}\.\d{4}", value):
-            raise BirthdayValueError("Date must be in format: DD.MM.YYYY")
+        if not re.fullmatch(r"[0123]\d\.[01]\d\.[12][09]\d{2}", value):
+            raise BirthdayValueError("Date must be in format: DD.MM.YYYY and age < 120")
         try:
             birthday = self.convert_str_to_date(value)
             super().__init__(birthday)
         except ValueError as exc:
             raise BirthdayValueError("Invalid date format. Use DD.MM.YYYY") from exc
+        if birthday <= datetime.now().date():
+            super().__init__(birthday)
+        else:
+            raise BirthdayValueError("The date cannot be in the future ")
 
     @staticmethod
     def convert_str_to_date(date: str) -> datetime.date:
@@ -144,7 +150,7 @@ class Birthday(Field):
         Returns:
             str: The birthday in the format "DD.MM.YYYY".
         """
-        return f"Birthday: {self.value.strftime('%d.%m.%Y')}"
+        return self.value.strftime("%d.%m.%Y")
 
 
 class Note(Field):
@@ -199,9 +205,9 @@ class Email(Field):
 
         Raises:
             ValueError: If the Email does not match the format (xxxxx@xx.xx).
-        """        
+        """
         if not re.fullmatch(r"^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w+$", value):
-            raise EmailValueError("Invalid Email")
+            raise EmailValueError("Invalid Email. Use xxxxx@xx.xx")
         super().__init__(value)
 
 
@@ -220,7 +226,9 @@ class Address(Field):
 
         Raises:
             ValueError: If the Address is empty.
-        """        
+        """
         if len(address) < 4:
-            raise AddressValueError("The address must be more than four characters long")
+            raise AddressValueError(
+                "The address must be more than four characters long"
+            )
         super().__init__(address)

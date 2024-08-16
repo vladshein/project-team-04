@@ -7,6 +7,8 @@ from prompt_toolkit.completion import Completer, Completion
 from src.models.address_book import AddressBook
 from src.book_controller import (
     add_contact,
+    remove_contact,
+    remove_phone,
     change_contact,
     show_phone,
     show_all,
@@ -30,6 +32,8 @@ from src.book_controller import (
 
 COMMANDS = {
     "add": add_contact,
+    "remove-contact": remove_contact,
+    "remove-phone": remove_phone,
     "change": change_contact,
     "phone": show_phone,
     "all": show_all,
@@ -88,16 +92,16 @@ class CommandCompleter(Completer):
     document : Document
         The `prompt_toolkit` document object representing the current state
         of the text input, including the text before the cursor.
-        
+
     complete_event : CompleteEvent
-        The `prompt_toolkit` event object representing the current state of the 
-        completion event, which includes flags and settings about the 
+        The `prompt_toolkit` event object representing the current state of the
+        completion event, which includes flags and settings about the
         completion process.
-    
+
     Yields
     ------
     Completion
-        A `Completion` object for each matching command, providing the 
+        A `Completion` object for each matching command, providing the
         completion text and the position where it should be inserted.
 
     """
@@ -143,5 +147,5 @@ def execute_command(command: str, args: list, book: AddressBook) -> str:
             suggested_command = suggest_command(command, list(COMMANDS.keys()))
             if suggested_command:
                 return f"Invalid command. Did you mean '{suggested_command}'?"
-            
+
             return "Invalid command."
