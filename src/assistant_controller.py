@@ -19,7 +19,13 @@ from src.book_controller import (
     show_notes_for_contact,
     find_notes_by_keyword,
     add_email,
-    add_address
+    add_address,
+    add_tag_to_contact,
+    show_tags_for_contact,
+    remove_tag_from_contact,
+    find_notes_by_tag,
+    show_all_sorted_tags,
+    show_all_notes_sorted_by_tags,
 )
 
 COMMANDS = {
@@ -39,7 +45,13 @@ COMMANDS = {
     "close": "",
     "hello": "",
     "add-email": add_email,
-    "add-address": add_address
+    "add-address": add_address,
+    "add-tag": add_tag_to_contact,
+    "show-tags": show_tags_for_contact,
+    "remove-tag": remove_tag_from_contact,
+    "find-notes-by-tag": find_notes_by_tag,
+    "show-all-tags": show_all_sorted_tags,
+    "show-all-notes-by-tags": show_all_notes_sorted_by_tags,
 }
 
 
@@ -122,7 +134,10 @@ def execute_command(command: str, args: list, book: AddressBook) -> str:
             return "How can I help you?"
 
         case command if command in COMMANDS:
-            return COMMANDS[command](args, book)
+            try:
+                return COMMANDS[command](args, book)
+            except Exception as e:
+                return f"Error: {str(e)}"
 
         case _:
             suggested_command = suggest_command(command, list(COMMANDS.keys()))

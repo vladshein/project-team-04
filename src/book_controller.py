@@ -322,6 +322,7 @@ def show_notes_for_contact(args: List[str], book: AddressBook) -> str:
     notes = "\n".join(str(note) for note in record.notes)
     return f"Notes for {name}:\n{notes}"
 
+
 @input_error
 def find_notes_by_keyword(args: List[str], book: AddressBook) -> str:
     """
@@ -354,6 +355,7 @@ def find_notes_by_keyword(args: List[str], book: AddressBook) -> str:
                          for contact_name, note_name, note_value in notes_found)
     return "No notes found containing the keyword."
 
+
 @input_error
 def add_email(args, book: AddressBook):
     name, email = args
@@ -363,6 +365,7 @@ def add_email(args, book: AddressBook):
     record.add_email(email)
     return "Email added."
 
+
 @input_error
 def add_address(args, book: AddressBook):
     name, address = args
@@ -371,3 +374,158 @@ def add_address(args, book: AddressBook):
         raise KeyError
     record.add_address(address)
     return "Address added."
+
+
+@input_error
+def add_tag_to_contact(args: List[str], book: AddressBook):
+    """
+    Add a tag to a note within an existing contact.
+    """
+    if len(args) < 3:
+        raise ValueError("Insufficient arguments provided. Expected contact name, note name, and tag.")
+
+    contact_name = args[0]
+    note_name = args[1]
+    tag_name = args[2]
+
+    contact = book.data.get(contact_name)
+    if not contact:
+        raise KeyError(f"Contact with name '{contact_name}' not found.")
+
+    note = next((note for note in contact.notes if note.name == note_name), None)
+    if not note:
+        raise KeyError(f"Note with name '{note_name}' not found in contact '{contact_name}'.")
+
+    note.add_tag(tag_name)
+    return "Tag added successfully."
+
+
+@input_error
+def remove_tag_from_contact(args: List[str], book: AddressBook):
+    """
+    Remove a tag from a note within an existing contact.
+    """
+    if len(args) < 3:
+        raise ValueError("Insufficient arguments provided. Expected contact name, note name, and tag.")
+
+    contact_name = args[0]
+    note_name = args[1]
+    tag_name = args[2]
+
+    contact = book.data.get(contact_name)
+    if not contact:
+        return f"Contact with name '{contact_name}' not found."
+
+    note = next((note for note in contact.notes if note.name == note_name), None)
+    if not note:
+        return f"Note with name '{note_name}' not found in contact '{contact_name}'."
+
+    try:
+        note.remove_tag(tag_name)
+        return "Tag removed successfully."
+    except ValueError as e:
+        return str(e)
+
+
+@input_error
+def find_notes_by_tag(args: List[str], book: AddressBook):
+    """
+    Find notes containing a specific tag.
+    """
+    if len(args) < 1:
+        raise ValueError("No tag provided. Please provide a tag to search.")
+
+    tag = args[0]
+    notes = book.find_notes_by_tag(tag)
+    if notes:
+        return "\n".join(str(note) for note in notes)
+    return "No notes found with the specified tag."
+
+
+@input_error
+def show_tags_for_contact(args: List[str], book: AddressBook) -> str:
+    """
+    Show all tags associated with a contact's notes.
+
+    Args:
+        args (List[str]): List containing the contact name.
+        book (AddressBook): The address book instance.
+
+    Returns:
+        str: A list of tags or a message indicating none.
+    """
+    if len(args) < 1:
+        raise ValueError("No contact name provided. Please provide a contact name to view tags.")
+
+    contact_name = args[0]
+    contact = book.data.get(contact_name)
+
+    if not contact:
+        raise KeyError(f"Contact with name '{contact_name}' not found.")
+
+    tags = []
+    for note in contact.notes:
+        tags.extend(note.tags)
+
+    if tags:
+        return f"Tags for {contact_name}: {', '.join(tags)}"
+    return f"No tags found for contact '{contact_name}'."
+
+
+@input_error
+def show_all_sorted_tags(args: List[str], book: AddressBook) -> str:
+    """
+    Show all unique tags from all contacts, sorted alphabetically.
+
+    Args:
+        args (List[str]): List of arguments (not used here).
+        book (AddressBook): The address book instance.
+
+    Returns:
+        str: A list of all unique tags sorted alphabetically.
+    """
+    tags = set()
+
+    for contact in book.data.values():
+        for note in contact.notes:
+            tags.update(note.tags)
+
+    sorted_tags = sorted(tags)
+
+    if sorted_tags:
+        return "All tags sorted alphabetically:\n" + ", ".join(sorted_tags)
+    return "No tags found in the address book."
+
+
+@input_error
+def show_all_notes_sorted_by_tags(args: List[str], book: AddressBook) -> str:
+    """
+    Show all notes sorted by tags across all contacts.
+
+    Args:
+        args (List[str]): An empty list as this function does not require any input arguments.
+        book (AddressBook): The address book instance.
+
+    Returns:
+        str: A list of notes sorted by tags or a message indicating none.
+    """
+    all_notes = []
+
+    # Collect all notes and tags
+    for record in book.data.values():
+        for note in record.notes:
+            all_notes.append((note, record.name.value))
+
+    # Sort notes by tags
+    sorted_notes = sorted(all_notes, key=lambda x: (x[0].tags, x[0].value))
+
+    # Formation of the result
+    if sorted_notes:
+        result = []
+        for note, contact_name in sorted_notes:
+            tags_str = f"[Tags: {', '.join(note.tags)}]" if note.tags else ""
+            result.append(f"Contact: {contact_name}, Note: '{note.value}' {tags_str}")
+        return "\n".join(result)
+
+    return "No notes found in the address book."
+

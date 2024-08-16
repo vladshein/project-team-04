@@ -76,3 +76,15 @@ class AddressBook(UserDict):
                         }
                     )
         return users_upcoming_birthday
+
+    def find_notes_by_tag(self, tag: str) -> list:
+        """
+        Find all notes that contain the given tag.
+        """
+        notes_with_tag = []
+        for record in self.data.values():
+            for note in record.notes:
+                if tag in note.tags:
+                    notes_with_tag.append(note)
+        return notes_with_tag
+

@@ -78,7 +78,7 @@ class Record:
         else:
             raise PhoneNumberValueError("Phone number not found")
 
-    def find_phone(self, phone_number: str) -> Phone:
+    def find_phone(self, phone_number: str) -> Phone | None:
         """
         Finds a phone number in the record.
 

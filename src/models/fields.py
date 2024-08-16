@@ -156,7 +156,21 @@ class Note(Field):
         if len(value) < 1:
             raise NoteValueError("Note cannot be empty")
         self.name = name
+        self.value = value
+        self.tags = []
         super().__init__(value)
+
+    def add_tag(self, tag: str) -> None:
+        """Adds a tag to the note."""
+        if tag not in self.tags:
+            self.tags.append(tag)
+
+    def remove_tag(self, tag: str) -> None:
+        """Removes a tag from the note."""
+        if tag in self.tags:
+            self.tags.remove(tag)
+        else:
+            raise ValueError(f"Tag '{tag}' not found in note.")
 
     def __str__(self) -> str:
         """
@@ -165,10 +179,11 @@ class Note(Field):
         Returns:
             str: The note content, and if available, the name.
         """
-        if self.name:
-            return f"{self.name}: '{self.value}'"
-        return f"Note: '{self.value}'"
-    
+
+        tags_str = f" [Tags: {', '.join(self.tags)}]" if self.tags else ""
+        return f"Note: '{self.value}'{tags_str}"
+
+
 class Email(Field):
     """
     Class for storing an Email. Inherits from Field.
