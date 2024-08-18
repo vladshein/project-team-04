@@ -107,11 +107,11 @@ def add_contact(args: List[str], book: AddressBook) -> str:
             record.add_phone(phone)
         except PhoneNumberValueError:
             if message == "Contact updated.":
-                message = "The contact was not updated because you\
-                            entered an incorrect phone number."
+                message = "The contact was not updated because you \
+entered an incorrect phone number."
             else:
-                message = "Contact added without a phone number because\
-                             you entered an incorrect phone number."
+                message = "Contact added without a phone number because \
+you entered an incorrect phone number."
     return message
 
 
