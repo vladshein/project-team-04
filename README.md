@@ -16,9 +16,22 @@ Additional functionality:
 2. Command correction hints in case of wrong input.
 3. Tabled output for all contacts.
 
-
+Variant 1:
 To install the assistant bot use the following command:
-pip install toretto_codeworks
+```
+git clone https://github.com/vladshein/project-team-04.git
+pip install .
+assistant-bot
+```
 
-After installation, use assistant_bot command(depending on
+Variant 2:
+To install the assistant bot use the following command:
+```
+pip install toretto_codeworks
+```
+After installation, use:
+```
+assistant_bot
+```
+command(depending on
 your operation system).
