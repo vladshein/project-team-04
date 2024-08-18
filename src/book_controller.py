@@ -238,7 +238,7 @@ def show_all(_: List[str], book: AddressBook) -> str:
         record = []
         record.append(phone.name.value.capitalize())
         record.append("; ".join(p.value for p in phone.phones))
-        record.append(phone.birthday.value if phone.birthday else "")
+        record.append(phone.birthday if phone.birthday else "")
         record.append(phone.email.value if phone.email else "")
         record.append(phone.address.value if phone.address else "")
         record_list.append(record)
