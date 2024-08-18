@@ -187,4 +187,5 @@ class Record:
         birthday_str = f" {self.birthday}" if self.birthday else ""
         email_str = f" {self.email}" if self.email else "-"
         address_str = f" {self.address}" if self.address else "-"
-        return f"Contact name: {self.name.value:<10}| phones: {phone_list:<10}| birthday: {birthday_str:<12}| email: {email_str:<10}| address: {address_str:<10}"
+        return f"Contact name: {self.name.value:<10}| phones: {phone_list:<10}|\
+              birthday: {birthday_str:<12}| email: {email_str:<10}| address: {address_str:<10}"

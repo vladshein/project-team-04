@@ -51,13 +51,13 @@ def input_error(func: Callable) -> Callable:
 
 def parse_input(user_input: str) -> Tuple[str, List[str]]:
     """
-        Parse user input into a command and its arguments.
-    NameValueError
-        Args:
-            user_input (str): The raw input from the user.
+    Parse user input into a command and its arguments.
 
-        Returns:
-            Tuple[str, List[str]]: The command and list of arguments.
+    Args:
+        user_input (str): The raw input from the user.
+
+    Returns:
+        Tuple[str, List[str]]: The command and list of arguments.
     """
     cmd, *args = user_input.split()
     cmd = cmd.strip().lower()
@@ -65,6 +65,9 @@ def parse_input(user_input: str) -> Tuple[str, List[str]]:
 
 
 def clear_screen():
+    """
+    Clear screen
+    """
     # For Windows
     if os.name == "nt":
         os.system("cls")
@@ -104,9 +107,11 @@ def add_contact(args: List[str], book: AddressBook) -> str:
             record.add_phone(phone)
         except PhoneNumberValueError:
             if message == "Contact updated.":
-                message = "The contact was not updated because you entered an incorrect phone number."
+                message = "The contact was not updated because you\
+                            entered an incorrect phone number."
             else:
-                message = "Contact added without a phone number because you entered an incorrect phone number."
+                message = "Contact added without a phone number because\
+                             you entered an incorrect phone number."
     return message
 
 
@@ -385,7 +390,7 @@ def edit_note_in_contact(args: List[str], book: AddressBook) -> str:
     """
     if len(args) < 3:
         raise ValueError(
-            "Incorrect input command argument. Use: 'edit-note [name] [note_name] [new_note_content]'"
+            "Incorrect input command argument. Use: 'edit-note [name][note_name][new_note_content]'"
         )
 
     try:
@@ -396,7 +401,7 @@ def edit_note_in_contact(args: List[str], book: AddressBook) -> str:
         )  # Join the rest of the arguments as the note content
     except ValueError as e:
         raise ValueError(
-            "Incorrect input command argument. Use: 'edit-note [name] [note_name] [new_note_content]'"
+            "Incorrect input command argument. Use: 'edit-note [name][note_name][new_note_content]'"
         ) from e
 
     record = book.find(contact_name)

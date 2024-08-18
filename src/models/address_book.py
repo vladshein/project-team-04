@@ -1,6 +1,7 @@
 """
 AddressBook
 """
+
 from datetime import datetime, timedelta
 from collections import UserDict
 from src.models.record import Record
@@ -42,7 +43,7 @@ class AddressBook(UserDict):
         if name in self.data:
             del self.data[name]
 
-    def get_upcoming_birthdays(self, days_quantity:int = 7) -> list[dict[str, str]]:
+    def get_upcoming_birthdays(self, days_quantity: int = 7) -> list[dict[str, str]]:
         """
         Returns a list of users with upcoming birthdays, including the congratulation date.
 
@@ -87,4 +88,3 @@ class AddressBook(UserDict):
                 if tag in note.tags:
                     notes_with_tag.append(note)
         return notes_with_tag
-
