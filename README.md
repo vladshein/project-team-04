@@ -31,7 +31,7 @@ pip install toretto_codeworks
 ```
 After installation, use:
 ```
-assistant_bot
+assistant-bot
 ```
 command(depending on
 your operation system).
